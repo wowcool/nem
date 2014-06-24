@@ -9,6 +9,8 @@ $(document).ready(function() {
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
     //Add User Click Button
     $('#btnAddUser').on('click', addUser);
+    //Delete the user link 
+    $('#userList table tbody').on('click', 'td a.linkdeleteuser', deleteUser);
 
 });
 
@@ -121,6 +123,39 @@ function addUser(event) {
     }
 };
 
+//Delete User
+function deleteUser(event) { 
+
+    event.preventDefault();
+
+    //Pop Up a Confirmation. 
+    
+    var confirmation = confirm('Are you sure you want to delete this user?');
+
+    //Check to make sure they confirmed
+    if (confirmation === true) { 
+
+        //If true, if they did, do our delete
+        $.ajax({
+            type: 'DELETE',
+            url: '/users/deleteuser/' + $(this).attr('rel')
+        }).done(function(response) { 
+            if (response.msg === '') {
+                toastr.success('Done! User Deleted.');
+            } else { 
+                toastr.warning('Oops!' + response.msg);
+            }
+            //Update the Table
+            populateTable();
+
+        });
+
+    }else { 
+        //If they said no to the confirm, do nothing... 
+        return false;
+    }
+
+};//End Delete User
 
 
 
